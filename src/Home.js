@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react';
 import BlogList from './BlogList';
+import useFetch from './useFetch';
 
+// eslint-disable-next-line no-lone-blocks
 {
   /*
    * We're gonna be using json-server, instead of creating a db from scratch.
    * Run command 👇
    *
    * $ npx json-server --watch data/db.json --port 8000
+   *
+   * 'http://localhost:8000/blogs'
    *
    * ENDPOINTS:
    * /blogs         GET       Fetch all blogs
@@ -17,32 +20,9 @@ import BlogList from './BlogList';
 }
 
 const Home = () => {
-  const [blogs, setBlogs] = useState(null);
-  const [isPending, setIsPending] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    setTimeout(() => {
-      fetch('http://localhost:8000/blogs')
-        .then(res => {
-          // console.log(res);
-          if (!res.ok) {
-            throw Error('Could not fetch data from resource!');
-          }
-          return res.json();
-        })
-        .then(data => {
-          console.log(data);
-          setBlogs(data);
-          setIsPending(false);
-          setError(null);
-        })
-        .catch(err => {
-          setIsPending(false);
-          setError(err.message);
-        });
-    }, 1000);
-  }, []); // useEffect dependancy
+  const { data: blogs, isPending, error } = useFetch(
+    'http://localhost:8000/blogs'
+  );
 
   return (
     <div className="home">
